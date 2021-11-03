@@ -3,8 +3,11 @@ import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 
+@Component
 public class JdbcAccountDao implements AccountDao {
 
     private JdbcTemplate jdbcTemplate;
@@ -14,11 +17,11 @@ public class JdbcAccountDao implements AccountDao {
 
 
     @Override
-    public BigDecimal getBalance(int user_id, int account_id) {
+    public BigDecimal getBalance(int user_id) {
         BigDecimal balance = null;
         Account account = null;
-        String sql = "SELECT * FROM accounts WHERE user_id = ? AND account_id = ?;";
-        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, user_id, account_id);
+        String sql = "SELECT * FROM accounts WHERE user_id = ?;";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, user_id);
         if (result.next()) {
             account = mapRowToAccount(result);
             balance = account.getBalance();

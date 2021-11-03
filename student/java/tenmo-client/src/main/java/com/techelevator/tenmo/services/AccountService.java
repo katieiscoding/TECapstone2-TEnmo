@@ -18,23 +18,31 @@ import java.security.Principal;
 public class AccountService {
 
     private static final String API_BASE_URL = "http://localhost:8080/";
-    private String authToken = null;
+    private String authToken = "";
     private RestTemplate restTemplate = new RestTemplate();
+    private AuthenticatedUser currentUser = new AuthenticatedUser();
+
+//    public AccountService(){};
+    public AccountService() { }
+
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
 
-    public BigDecimal getBalance(int userId, int accountId) {
+
+    public BigDecimal viewCurrentBalance() {
+//        String token = currentUser.getToken();
+//        makeAuthEntity(token);
 
         BigDecimal balance = null;
-        Account account = null;
-
+        int user_id = currentUser.getUser().getId();
         //Let's test this part once the database is hooked up
 
         try {
             ResponseEntity<BigDecimal> response =
-                    restTemplate.exchange(API_BASE_URL + "users/" + userId + "/accounts/" + accountId, HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
+                    restTemplate.exchange(API_BASE_URL + "users/" + user_id, HttpMethod.GET,
+                            makeAuthEntity(), BigDecimal.class);
             balance = response.getBody();
 
         } catch (ResourceAccessException e) {
@@ -49,6 +57,11 @@ public class AccountService {
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(authToken);
             return new HttpEntity<>(headers);
+        }
+
+
+        public String printErrorMessage() {
+        return "Error occurred";
         }
 
     }
