@@ -10,7 +10,7 @@ import java.security.Principal;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
-@RequestMapping(path="/transfers")
+@RequestMapping(path="transfers")
 
 public class TransferController {
 

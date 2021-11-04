@@ -2,6 +2,7 @@ package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import io.cucumber.core.resource.Resource;
 import okhttp3.Response;
@@ -39,11 +40,18 @@ public class AccountService {
         this.currentUser = user;
     }
 
-    public BigDecimal getAccount() throws AccountServiceException {
+    public Transfer sendBucks(int userIdOfRecipient, Double amountToTransfer) throws AccountServiceException {
+        Transfer transfer = new Transfer();
+        transfer.setAccount_from(currentUser.getUser().getId());
+        BigDecimal amountToTransferAsBigDecimal = BigDecimal.valueOf(amountToTransfer);
+        transfer.setAmount(amountToTransferAsBigDecimal);
+        transfer.setTransfer_status_id(2);
+        transfer.setTransfer_type_id(2);
+        transfer.setAccount_to(userIdOfRecipient);
 
-        String path = API_BASE_URL + "accounts/users/";
-        ResponseEntity<BigDecimal> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(),
-                BigDecimal.class);
+        String path = API_BASE_URL + "transfers";
+        ResponseEntity<Transfer> response = restTemplate.exchange(path, HttpMethod.POST, makeAuthEntity(),
+               Transfer.class);
         return response.getBody();
     }
 

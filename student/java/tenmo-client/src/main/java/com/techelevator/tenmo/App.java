@@ -98,13 +98,21 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void sendBucks() {
 		viewAllUsers();
-		
+		int recipientId = console.getUserInputInteger("Enter the name of desired recipient's user id");
+		String amountToTransfer = console.getUserInput("Enter the amount of money you want to send");
+		Double amountToTransferAsDouble = Double.valueOf(amountToTransfer);
+		try {
+			accountService.sendBucks(recipientId, amountToTransferAsDouble);
+		} catch (Exception e) {
+			e.getMessage();
+		}
+		System.out.println("transfer complete");
 	}
 
 	private void viewAllUsers() {
     	User[] allUsers = accountService.getAllUsers();
     	for(User a : allUsers) {
-			System.out.println(a.getUsername());
+			System.out.println(a.getUsername() + "'s user id is: " + a.getId());
 		}
 
 	}
