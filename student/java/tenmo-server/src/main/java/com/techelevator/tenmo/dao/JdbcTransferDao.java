@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.Transfer;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import java.util.ArrayList;
@@ -7,6 +8,9 @@ import java.util.List;
 
 @Component
 public class JdbcTransferDao implements TransferDao {
+
+
+
 
     // TODO - we need to:
     // DONE! remove money from user account (UPDATE balance IN accounts WHERE user_id = ?)
@@ -16,10 +20,13 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public Transfer sendBucks() {
-        Transfer transfer = new Transfer();
         String sql = "UPDATE accounts SET balance = balance - ? WHERE user_id = ?; " +
                 "UPDATE accounts SET balance = balance + ? WHERE user_id = ?'; " +
                 "INSERT INTO transfers VALUES ('DEFAULT', ?, ?, ?, ?);";
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, sendBucks().getAmount(), sendBucks().getAccount_from(),
+                sendBucks().getAmount(), sendBucks().getAccount_to());
+        Transfer transfer = mapRowToTransfer(results);
 
     return transfer;
     }
