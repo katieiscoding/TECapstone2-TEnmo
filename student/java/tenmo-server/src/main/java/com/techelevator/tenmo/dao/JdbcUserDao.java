@@ -30,7 +30,7 @@ public class JdbcUserDao implements UserDao {
             return id;
         } else {
             return -1;
-    }
+        }
     }
 
     @Override
@@ -38,7 +38,7 @@ public class JdbcUserDao implements UserDao {
         List<User> users = new ArrayList<>();
         String sql = "SELECT user_id, username, password_hash FROM users;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
-        while(results.next()) {
+        while (results.next()) {
             User user = mapRowToUser(results);
             users.add(user);
         }
@@ -49,14 +49,26 @@ public class JdbcUserDao implements UserDao {
     public User findByUsername(String username) throws UsernameNotFoundException {
         String sql = "SELECT user_id, username, password_hash FROM users WHERE username ILIKE ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, username);
-        if (rowSet.next()){
+        if (rowSet.next()) {
             return mapRowToUser(rowSet);
-            }
+        }
         throw new UsernameNotFoundException("User " + username + " was not found.");
     }
 
+
     @Override
     public boolean create(String username, String password) {
+
+        // preventing null or blank inputs
+        if (username == null || username.isBlank()) {
+            throw new IllegalArgumentException("Username cannot be empty.");
+        }
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("Password cannot be empty.");
+        }
+
+        // bundling the following two actions
+        jdbcTemplate.execute("BEGIN TRANSACTION");
 
         // create user
         String sql = "INSERT INTO users (username, password_hash) VALUES (?, ?) RETURNING user_id";
@@ -65,16 +77,21 @@ public class JdbcUserDao implements UserDao {
         try {
             newUserId = jdbcTemplate.queryForObject(sql, Integer.class, username, password_hash);
         } catch (DataAccessException e) {
+            jdbcTemplate.execute("ROLLBACK");
             return false;
-                }
+        }
 
         // create account
         sql = "INSERT INTO accounts (user_id, balance) values(?, ?)";
         try {
             jdbcTemplate.update(sql, newUserId, STARTING_BALANCE);
         } catch (DataAccessException e) {
+            jdbcTemplate.execute("ROLLBACK");
             return false;
         }
+
+        // committing the previous two actions
+        jdbcTemplate.execute("COMMIT");
 
         return true;
     }

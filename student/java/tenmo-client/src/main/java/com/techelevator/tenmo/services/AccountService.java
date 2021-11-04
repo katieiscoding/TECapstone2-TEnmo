@@ -4,6 +4,7 @@ import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.User;
 import io.cucumber.core.resource.Resource;
+import okhttp3.Response;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,8 +13,11 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccountService {
 
@@ -22,8 +26,8 @@ public class AccountService {
     private RestTemplate restTemplate = new RestTemplate();
     private AuthenticatedUser currentUser = new AuthenticatedUser();
 
-//    public AccountService(){};
-    public AccountService() { }
+    public AccountService() {
+    }
 
 
     public void setAuthToken(String authToken) {
@@ -31,28 +35,34 @@ public class AccountService {
     }
 
 
-    public BigDecimal viewCurrentBalance() {
-//        String token = currentUser.getToken();
-//        makeAuthEntity(token);
-
-        BigDecimal balance = null;
-        int user_id = currentUser.getUser().getId();
-        //Let's test this part once the database is hooked up
-
-        try {
-            ResponseEntity<BigDecimal> response =
-                    restTemplate.exchange(API_BASE_URL + "users/" + user_id, HttpMethod.GET,
-                            makeAuthEntity(), BigDecimal.class);
-            balance = response.getBody();
-
-        } catch (ResourceAccessException e) {
-            System.out.println("There was an issue retrieving the balance. Please try again.");
-        }
-
-        System.out.println("Your current balance is $" + balance);
-        return balance;
-
+    public void setAuthenticatedUser(AuthenticatedUser user) {
+        this.currentUser = user;
     }
+
+    public BigDecimal getAccount() throws AccountServiceException {
+
+        String path = API_BASE_URL + "accounts/users/";
+        ResponseEntity<BigDecimal> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(),
+                BigDecimal.class);
+        return response.getBody();
+    }
+
+    public User[] getAllUsers() {
+        String path = API_BASE_URL + "accounts";
+        ResponseEntity<User[]> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(), User[].class);
+        return response.getBody();
+    }
+
+    public BigDecimal getBalance() throws AccountServiceException {
+    if (this.currentUser == null) {
+        throw new AccountServiceException("User is not logged in");
+    }
+    String path = API_BASE_URL + "accounts/users/";
+    ResponseEntity<BigDecimal> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(),
+            BigDecimal.class);
+        return response.getBody();
+}
+
         private HttpEntity<Void> makeAuthEntity() {
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(authToken);

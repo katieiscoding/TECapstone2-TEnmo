@@ -3,9 +3,12 @@ import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class JdbcAccountDao implements AccountDao {
@@ -15,18 +18,35 @@ public class JdbcAccountDao implements AccountDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
+    public String getUsernameById(int userId) throws UsernameNotFoundException {
+        String sql = "SELECT username FROM users WHERE user_id = ?";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId);
+        if (rowSet.next()) {
+            return rowSet.getString("username");
+        }
+        throw new UsernameNotFoundException("No users were found.");
+    }
 
     @Override
-    public BigDecimal getBalance(int user_id) {
-        BigDecimal balance = null;
+    public Account getAccountByUserId(int userId) {
         Account account = null;
-        String sql = "SELECT * FROM accounts WHERE user_id = ?;";
-        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, user_id);
-        if (result.next()) {
+        String sql = "SELECT * FROM accounts WHERE user_id = ?";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, userId);
+        while (result.next()) {
             account = mapRowToAccount(result);
-            balance = account.getBalance();
         }
-        return balance;
+        return account;
+    }
+
+    public List<Account> getAllUsers() {
+        List<Account> allUsers = new ArrayList<>();
+        String sql = "SELECT * FROM accounts";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql);
+        while (result.next()) {
+            allUsers.add(mapRowToAccount(result));
+        }
+        return allUsers;
     }
 
     private Account mapRowToAccount(SqlRowSet rs) {
@@ -34,6 +54,7 @@ public class JdbcAccountDao implements AccountDao {
         account.setAccountId(rs.getInt("account_id"));
         account.setUserId(rs.getInt("user_id"));
         account.setBalance(rs.getBigDecimal("balance"));
+        account.setUsername(getUsernameById(rs.getInt("user_id")));
         return account;
     }
 

@@ -13,11 +13,13 @@ public class Account {
     @JsonProperty("user_id")
     private int userId;
     private BigDecimal balance;
+    private String username;
 
-    public Account(int accountId, int userId, BigDecimal balance) {
+    public Account(int accountId, int userId, BigDecimal balance, String username) {
         this.accountId = accountId;
         this.userId = userId;
         this.balance = balance;
+        this.username = username;
     }
 
     public Account() {
@@ -45,5 +47,13 @@ public class Account {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

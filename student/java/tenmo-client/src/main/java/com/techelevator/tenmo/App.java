@@ -2,8 +2,10 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
+import com.techelevator.tenmo.services.AccountServiceException;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.view.ConsoleService;
@@ -33,7 +35,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private AccountService accountService;
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws AccountServiceException {
     	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL), new AccountService());
     	app.run();
     }
@@ -44,7 +46,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		this.accountService = accountService;
 	}
 
-	public void run() {
+	public void run() throws AccountServiceException {
 		System.out.println("*********************");
 		System.out.println("* Welcome to TEnmo! *");
 		System.out.println("*********************");
@@ -53,7 +55,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		mainMenu();
 	}
 
-	private void mainMenu() {
+	private void mainMenu() throws AccountServiceException {
 		while(true) {
 			String choice = (String)console.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 			if(MAIN_MENU_OPTION_VIEW_BALANCE.equals(choice)) {
@@ -75,14 +77,17 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		}
 	}
 
-	private void viewCurrentBalance() {
+	private void viewCurrentBalance() throws AccountServiceException {
     	//TODO prompt for user input
-		BigDecimal balance = accountService.viewCurrentBalance();
+		BigDecimal balance = accountService.getBalance();
 		System.out.println(balance);
 	}
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
+
+
+
 		
 	}
 
@@ -92,8 +97,16 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
+		viewAllUsers();
 		
+	}
+
+	private void viewAllUsers() {
+    	User[] allUsers = accountService.getAllUsers();
+    	for(User a : allUsers) {
+			System.out.println(a.getUsername());
+		}
+
 	}
 
 	private void requestBucks() {
