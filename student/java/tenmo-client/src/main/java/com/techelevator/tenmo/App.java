@@ -85,9 +85,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewTransferHistory() {
-//    	int userId = console.getUserInputInteger("Enter your user ID");
+    	int userId = console.getUserInputInteger("Enter your user ID");
 //		System.out.println(accountService.getListOfTransfersByUserID(userId));
-		Transfer[] transfers = accountService.getListOfTransfersByUserID(currentUser.getUser().getId());
+		Transfer[] transfers = accountService.getListOfTransfersByUserID(userId);
 		for (Transfer transfer : transfers) {
 			System.out.println(transfer.toString());
 		}

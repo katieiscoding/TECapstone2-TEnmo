@@ -69,7 +69,7 @@ public class AccountService {
 
 
     public Transfer[] getListOfTransfersByUserID(@PathVariable int userId) {
-        String path = API_BASE_URL + "transfers/" + userId;
+        String path = API_BASE_URL + "transfers/users/" + userId;
         ResponseEntity<Transfer[]> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(), Transfer[].class);
         return response.getBody();
     }
@@ -80,6 +80,12 @@ public class AccountService {
         return response.getBody();
     }
 
+    private HttpEntity<Transfer[]> makeTransferArrayEntity(Transfer[] transferArray) {
+        HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.setBearerAuth(authToken);
+    return new HttpEntity<>(transferArray, headers);
+    }
 
     private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
         HttpHeaders headers = new HttpHeaders();
