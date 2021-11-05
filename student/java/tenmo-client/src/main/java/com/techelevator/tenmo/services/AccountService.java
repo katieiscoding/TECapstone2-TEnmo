@@ -7,6 +7,7 @@ import com.techelevator.tenmo.model.User;
 import io.cucumber.core.resource.Resource;
 import okhttp3.Response;
 import org.springframework.http.*;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
@@ -69,6 +70,20 @@ public class AccountService {
             BigDecimal.class);
         return response.getBody();
 }
+
+
+    public Transfer[] getListOfTransfersByUserID(@PathVariable int userId) {
+        String path = API_BASE_URL + "transfers/" + userId;
+        ResponseEntity<Transfer[]> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(), Transfer[].class);
+        return response.getBody();
+    }
+
+    public Transfer getTransferByTransferId(@PathVariable int transferID) {
+        String path = API_BASE_URL + "transfers/" + transferID;
+        ResponseEntity<Transfer> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(), Transfer.class);
+        return response.getBody();
+    }
+
 
     private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
         HttpHeaders headers = new HttpHeaders();

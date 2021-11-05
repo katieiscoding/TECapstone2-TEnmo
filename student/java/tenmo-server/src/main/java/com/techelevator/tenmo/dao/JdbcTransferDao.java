@@ -14,12 +14,14 @@ public class JdbcTransferDao implements TransferDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+        @Override
         public void sendBucks(Transfer transfer) {
             String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (?, ?, ?, ?, ?)";
             jdbcTemplate.update(sql, transfer.getTransfer_type_id(), transfer.getTransfer_status_id(),
                     transfer.getAccount_from(), transfer.getAccount_to(), transfer.getAmount());
         }
 
+        @Override
         public List<Transfer> getTransfersByUserId(int userId) {
             List<Transfer> transfersByUserId = new ArrayList<>();
             String sql = "SELECT * FROM transfers WHERE user_id = ?";
@@ -31,7 +33,7 @@ public class JdbcTransferDao implements TransferDao {
             return transfersByUserId;
         }
 
-
+        @Override
         public Transfer getTransfersByTransferId(int transferId) {
             Transfer transfer = new Transfer();
             String sql = "SELECT * FROM transfers WHERE transfer_id = ?";

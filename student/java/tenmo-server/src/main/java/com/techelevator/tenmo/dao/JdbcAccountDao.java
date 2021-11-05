@@ -39,6 +39,7 @@ public class JdbcAccountDao implements AccountDao {
         return account;
     }
 
+    @Override
     public List<Account> getAllUsers() {
         List<Account> allUsers = new ArrayList<>();
         String sql = "SELECT * FROM accounts";
@@ -49,17 +50,17 @@ public class JdbcAccountDao implements AccountDao {
         return allUsers;
     }
 
-
-    public void addToBalance(@org.jetbrains.annotations.NotNull Transfer transfer) {
-        String sql = "UPDATE accounts SET balance = (balance + ?) WHERE user_id = ?";
+    @Override
+    public void addToBalance(Transfer transfer) {
+        String sql = "UPDATE accounts SET balance = (balance + ?) WHERE account_id = ?";
         jdbcTemplate.update(sql, transfer.getAmount(), transfer.getAccount_to());
     }
 
+    @Override
     public void subtractFromBalance(Transfer transfer) {
-        String sql = "UPDATE accounts SET balance = (balance - ?) WHERE user_id = ?";
+        String sql = "UPDATE accounts SET balance = (balance - ?) WHERE account_id = ?";
         jdbcTemplate.update(sql, transfer.getAmount(), transfer.getAccount_from());
     }
-
 
     private Account mapRowToAccount(SqlRowSet rs) {
         Account account = new Account();

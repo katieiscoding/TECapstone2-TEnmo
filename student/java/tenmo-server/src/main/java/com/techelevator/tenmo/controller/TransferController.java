@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.IllegalTransactionStateException;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
@@ -33,5 +34,20 @@ public class TransferController {
         accountDao.addToBalance(transfer);
         accountDao.subtractFromBalance(transfer);
     }
+
+
+
+
+    @RequestMapping(path = "/users/{userId}", method = RequestMethod.GET)
+    public List<Transfer> listOfTransfersByUserId(@PathVariable int userId) {
+        return transferDao.getTransfersByUserId(userId);
+    }
+
+    @RequestMapping(path = "/{transferId}", method = RequestMethod.GET)
+    public Transfer getTransfersByTransferId(@PathVariable int transferId) {
+        return transferDao.getTransfersByTransferId(transferId);
+    }
+
+
 
 }

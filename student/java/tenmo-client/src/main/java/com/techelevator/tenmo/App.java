@@ -82,10 +82,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
+		int transfer_id = console.getUserInputInteger("Enter the desired transfer id");
 
-
-
-		
+		System.out.println(accountService.getTransferByTransferId(transfer_id).toString());
 	}
 
 	private void viewPendingRequests() {
@@ -94,18 +93,19 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void sendBucks() {
-		viewAllUsers();
-		int recipientId = console.getUserInputInteger("Enter the name of desired recipient's user id");
+    	viewAllUsers();
+		int senderAccountId = console.getUserInputInteger("Enter your account id");
+		int recipientAccountId = console.getUserInputInteger("Enter the desired recipient's account id");
 		String amountToTransfer = console.getUserInput("Enter the amount of money you want to send");
 		Double amountToTransferAsDouble = Double.valueOf(amountToTransfer);
 		Transfer transfer = new Transfer();
 
-		transfer.setAccount_from(currentUser.getUser().getId());
+		transfer.setAccount_from(senderAccountId);
         BigDecimal amountToTransferAsBigDecimal = BigDecimal.valueOf(amountToTransferAsDouble);
         transfer.setAmount(amountToTransferAsBigDecimal);
         transfer.setTransfer_status_id(2);
         transfer.setTransfer_type_id(2);
-        transfer.setAccount_to(recipientId);
+        transfer.setAccount_to(recipientAccountId);
 		try {
 //			accountService.sendBucks(recipientId, amountToTransferAsDouble);
 			accountService.sendBucks(transfer);
@@ -118,7 +118,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void viewAllUsers() {
     	User[] allUsers = accountService.getAllUsers();
     	for(User a : allUsers) {
-			System.out.println(a.getUsername() + "'s user id is: " + a.getId());
+			System.out.println(a.getUsername());
 		}
 
 	}
