@@ -9,6 +9,7 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.view.ConsoleService;
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 public class App {
 
@@ -21,10 +22,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private static final String MAIN_MENU_OPTION_VIEW_BALANCE = "View your current balance";
 	private static final String MAIN_MENU_OPTION_SEND_BUCKS = "Send TE bucks";
 	private static final String MAIN_MENU_OPTION_VIEW_PAST_TRANSFERS = "View your past transfers";
+	private static final String MAIN_MENU_OPTION_VIEW_TRANSFERS_BY_TRANSFER_ID = "View information about a specific transfer";
 	private static final String MAIN_MENU_OPTION_REQUEST_BUCKS = "Request TE bucks";
 	private static final String MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS = "View your pending requests";
 	private static final String MAIN_MENU_OPTION_LOGIN = "Login as different user";
-	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_VIEW_BALANCE, MAIN_MENU_OPTION_SEND_BUCKS, MAIN_MENU_OPTION_VIEW_PAST_TRANSFERS, MAIN_MENU_OPTION_REQUEST_BUCKS, MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS, MAIN_MENU_OPTION_LOGIN, MENU_OPTION_EXIT };
+	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_VIEW_BALANCE, MAIN_MENU_OPTION_SEND_BUCKS, MAIN_MENU_OPTION_VIEW_PAST_TRANSFERS, MAIN_MENU_OPTION_VIEW_TRANSFERS_BY_TRANSFER_ID, MAIN_MENU_OPTION_REQUEST_BUCKS, MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS, MAIN_MENU_OPTION_LOGIN, MENU_OPTION_EXIT };
 	
     private AuthenticatedUser currentUser;
     private ConsoleService console;
@@ -59,6 +61,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				viewCurrentBalance();
 			} else if(MAIN_MENU_OPTION_VIEW_PAST_TRANSFERS.equals(choice)) {
 				viewTransferHistory();
+			} else if(MAIN_MENU_OPTION_VIEW_TRANSFERS_BY_TRANSFER_ID.equals(choice)) {
+				viewTransferByTransferId();
 			} else if(MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS.equals(choice)) {
 				viewPendingRequests();
 			} else if(MAIN_MENU_OPTION_SEND_BUCKS.equals(choice)) {
@@ -81,8 +85,18 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-		int transfer_id = console.getUserInputInteger("Enter the desired transfer id");
+//    	int userId = console.getUserInputInteger("Enter your user ID");
+//		System.out.println(accountService.getListOfTransfersByUserID(userId));
+		Transfer[] transfers = accountService.getListOfTransfersByUserID(currentUser.getUser().getId());
+		for (Transfer transfer : transfers) {
+			System.out.println(transfer.toString());
+		}
+	}
+
+
+
+	private void viewTransferByTransferId() {
+		int transfer_id = console.getUserInputInteger("Enter the desired transfer ID");
 
 		System.out.println(accountService.getTransferByTransferId(transfer_id).toString());
 	}
@@ -92,30 +106,33 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		
 	}
 
-	private void sendBucks() {
-    	viewAllUsers();
-		int senderAccountId = console.getUserInputInteger("Enter your account id");
-		int recipientAccountId = console.getUserInputInteger("Enter the desired recipient's account id");
+	private void sendBucks() throws AccountServiceException {
+		viewAllUsers();
+		int senderAccountId = console.getUserInputInteger("Enter your account ID");
+		int recipientAccountId = console.getUserInputInteger("Enter the desired recipient's account ID");
 		String amountToTransfer = console.getUserInput("Enter the amount of money you want to send");
 		Double amountToTransferAsDouble = Double.valueOf(amountToTransfer);
 		Transfer transfer = new Transfer();
 
 		transfer.setAccount_from(senderAccountId);
-        BigDecimal amountToTransferAsBigDecimal = BigDecimal.valueOf(amountToTransferAsDouble);
-        transfer.setAmount(amountToTransferAsBigDecimal);
-        transfer.setTransfer_status_id(2);
-        transfer.setTransfer_type_id(2);
-        transfer.setAccount_to(recipientAccountId);
+		BigDecimal amountToTransferAsBigDecimal = BigDecimal.valueOf(amountToTransferAsDouble);
+		transfer.setAmount(amountToTransferAsBigDecimal);
+		transfer.setTransfer_status_id(2);
+		transfer.setTransfer_type_id(2);
+		transfer.setAccount_to(recipientAccountId);
+		if (transfer.getAmount().compareTo(accountService.getBalance()) > 0) {
+			System.out.println("You can't overdraw your account.");
+			return;
+		}
 		try {
-//			accountService.sendBucks(recipientId, amountToTransferAsDouble);
 			accountService.sendBucks(transfer);
+			System.out.println("Transfer complete.");
 		} catch (Exception e) {
 			e.getMessage();
 		}
-		System.out.println("transfer complete");
 	}
 
-	private void viewAllUsers() {
+		private void viewAllUsers() {
     	User[] allUsers = accountService.getAllUsers();
     	for(User a : allUsers) {
 			System.out.println(a.getUsername());

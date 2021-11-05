@@ -29,17 +29,14 @@ public class AccountService {
     public AccountService() {
     }
 
-
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
-
 
     public void setAuthenticatedUser(AuthenticatedUser user) {
         this.currentUser = user;
     }
 
-//    public Transfer sendBucks(int userIdOfRecipient, Double amountToTransfer) throws AccountServiceException {
         public Transfer sendBucks(Transfer newTransfer) throws AccountServiceException {
         Transfer returnedTransfer = null;
 
@@ -47,7 +44,6 @@ public class AccountService {
             String path = API_BASE_URL + "transfers";
             ResponseEntity<Transfer> response = restTemplate.exchange(path, HttpMethod.POST, makeTransferEntity(newTransfer),
                     Transfer.class);
-//        return response.getBody();
             returnedTransfer = response.getBody();
         }catch (RestClientResponseException | ResourceAccessException e) {
             e.getMessage();
