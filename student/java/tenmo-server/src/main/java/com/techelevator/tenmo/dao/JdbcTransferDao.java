@@ -9,79 +9,50 @@ import java.util.List;
 @Component
 public class JdbcTransferDao implements TransferDao {
 
-
-
-
-    // TODO - we need to:
-    // DONE! remove money from user account (UPDATE balance IN accounts WHERE user_id = ?)
-    // DONE! add money to other user account (UPDATE balance IN accounts WHERE user_id = ?)
-    // DONE! create new row in the transfer table (INSERT INTO transfers VALUES ...)
-    // DONE! update transfer status (UPDATE transfer_status_id IN transfers WHERE transfer_id = ?)
-
-    @Override
-    public Transfer sendBucks() {
-        String sql = "UPDATE accounts SET balance = balance - ? WHERE user_id = ?; " +
-                "UPDATE accounts SET balance = balance + ? WHERE user_id = ?'; " +
-                "INSERT INTO transfers VALUES ('DEFAULT', ?, ?, ?, ?);";
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, sendBucks().getAmount(), sendBucks().getAccount_from(),
-                sendBucks().getAmount(), sendBucks().getAccount_to());
-        Transfer transfer = mapRowToTransfer(results);
-
-    return transfer;
+    private JdbcTemplate jdbcTemplate;
+    public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-// #7 - optional use case
+        public void sendBucks(Transfer transfer) {
+            String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (?, ?, ?, ?, ?)";
+            jdbcTemplate.update(sql, transfer.getTransfer_type_id(), transfer.getTransfer_status_id(),
+                    transfer.getAccount_from(), transfer.getAccount_to(), transfer.getAmount());
+        }
 
-//    @Override
-//    public Transfer requestBucks() {
-//        Transfer transfer = new Transfer();
-////        String sql = "SELECT "
-//
-//        return transfer;
-//    }
+        public List<Transfer> getTransfersByUserId(int userId) {
+            List<Transfer> transfersByUserId = new ArrayList<>();
+            String sql = "SELECT * FROM transfers WHERE user_id = ?";
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+            while (results.next()) {
+                Transfer transfer = mapRowToTransfer(results);
+                transfersByUserId.add(transfer);
+            }
+            return transfersByUserId;
+        }
 
-    @Override
-    public List<Transfer> getTransfersByUserId() {
-        List<Transfer> transfersByUserId = new ArrayList<>();
-//        String sql = "SELECT "
 
-        return transfersByUserId;
+        public Transfer getTransfersByTransferId(int transferId) {
+            Transfer transfer = new Transfer();
+            String sql = "SELECT * FROM transfers WHERE transfer_id = ?";
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
+            if (results.next()) {
+                transfer = mapRowToTransfer(results);
+            }
+            return transfer;
+        }
+
+
+        private Transfer mapRowToTransfer(SqlRowSet rs) {
+            Transfer transfer = new Transfer();
+            transfer.setTransfer_id(rs.getInt("transfer_id"));
+            transfer.setTransfer_type_id(rs.getInt("transfer_type_id"));
+            transfer.setTransfer_status_id(rs.getInt("transfer_status_id"));
+            transfer.setAccount_from(rs.getInt("account_from"));
+            transfer.setAccount_to(rs.getInt("account_to"));
+            transfer.setAmount(rs.getBigDecimal("amount"));
+            return transfer;
+        }
     }
 
-    @Override
-    public List<Transfer> getTransfersByTransferId() {
-        List<Transfer> transfersByTransferId = new ArrayList<>();
-//        String sql = "SELECT "
-
-        return transfersByTransferId;
-    }
-
-
-
-    private Transfer mapRowToTransfer(SqlRowSet rs) {
-        Transfer transfer = new Transfer();
-        transfer.setTransfer_id(rs.getInt("transfer_id"));
-        transfer.setTransfer_type_id(rs.getInt("transfer_type_id"));
-        transfer.setTransfer_status_id(rs.getInt("transfer_status_id"));
-        transfer.setAccount_from(rs.getInt("account_from"));
-        transfer.setAccount_to(rs.getInt("account_to"));
-        transfer.setAmount(rs.getBigDecimal("amount"));
-        return transfer;
-    }
-}
-
-
-
-//for reference ---------
-//    @Override
-//    public Account getAccountByUserId(int userId) {
-//        Account account = null;
-//        String sql = "SELECT * FROM accounts WHERE user_id = ?;";
-//        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, userId);
-//        while (result.next()) {
-//            account = mapRowToAccount(result);
-//        }
-//        return account;
-//    }
 

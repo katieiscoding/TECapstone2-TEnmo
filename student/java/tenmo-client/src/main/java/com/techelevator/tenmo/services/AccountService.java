@@ -6,12 +6,10 @@ import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import io.cucumber.core.resource.Resource;
 import okhttp3.Response;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Array;
@@ -40,19 +38,20 @@ public class AccountService {
         this.currentUser = user;
     }
 
-    public Transfer sendBucks(int userIdOfRecipient, Double amountToTransfer) throws AccountServiceException {
-        Transfer transfer = new Transfer();
-        transfer.setAccount_from(currentUser.getUser().getId());
-        BigDecimal amountToTransferAsBigDecimal = BigDecimal.valueOf(amountToTransfer);
-        transfer.setAmount(amountToTransferAsBigDecimal);
-        transfer.setTransfer_status_id(2);
-        transfer.setTransfer_type_id(2);
-        transfer.setAccount_to(userIdOfRecipient);
+//    public Transfer sendBucks(int userIdOfRecipient, Double amountToTransfer) throws AccountServiceException {
+        public Transfer sendBucks(Transfer newTransfer) throws AccountServiceException {
+        Transfer returnedTransfer = null;
 
-        String path = API_BASE_URL + "transfers";
-        ResponseEntity<Transfer> response = restTemplate.exchange(path, HttpMethod.POST, makeAuthEntity(),
-               Transfer.class);
-        return response.getBody();
+        try {
+            String path = API_BASE_URL + "transfers";
+            ResponseEntity<Transfer> response = restTemplate.exchange(path, HttpMethod.POST, makeTransferEntity(newTransfer),
+                    Transfer.class);
+//        return response.getBody();
+            returnedTransfer = response.getBody();
+        }catch (RestClientResponseException | ResourceAccessException e) {
+            e.getMessage();
+        }
+            return returnedTransfer;
     }
 
     public User[] getAllUsers() {
@@ -70,6 +69,13 @@ public class AccountService {
             BigDecimal.class);
         return response.getBody();
 }
+
+    private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(authToken);
+        return new HttpEntity<>(transfer, headers);
+    }
 
         private HttpEntity<Void> makeAuthEntity() {
             HttpHeaders headers = new HttpHeaders();

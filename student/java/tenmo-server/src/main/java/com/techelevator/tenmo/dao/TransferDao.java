@@ -5,9 +5,8 @@ import com.techelevator.tenmo.model.Transfer;
 import java.util.List;
 
 public interface TransferDao {
-    public Transfer sendBucks();
-//  public Transfer requestBucks();
-    public List<Transfer> getTransfersByUserId();
-    public List<Transfer> getTransfersByTransferId();
+    public void sendBucks(Transfer transfer);
+    public List<Transfer> getTransfersByUserId(int userId);
+    public Transfer getTransfersByTransferId(int transferId);
 
 }

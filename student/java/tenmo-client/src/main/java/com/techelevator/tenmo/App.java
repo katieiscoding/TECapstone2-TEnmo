@@ -1,7 +1,6 @@
 package com.techelevator.tenmo;
-
-import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
@@ -9,9 +8,7 @@ import com.techelevator.tenmo.services.AccountServiceException;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.view.ConsoleService;
-
 import java.math.BigDecimal;
-import java.security.Principal;
 
 public class App {
 
@@ -101,8 +98,17 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		int recipientId = console.getUserInputInteger("Enter the name of desired recipient's user id");
 		String amountToTransfer = console.getUserInput("Enter the amount of money you want to send");
 		Double amountToTransferAsDouble = Double.valueOf(amountToTransfer);
+		Transfer transfer = new Transfer();
+
+		transfer.setAccount_from(currentUser.getUser().getId());
+        BigDecimal amountToTransferAsBigDecimal = BigDecimal.valueOf(amountToTransferAsDouble);
+        transfer.setAmount(amountToTransferAsBigDecimal);
+        transfer.setTransfer_status_id(2);
+        transfer.setTransfer_type_id(2);
+        transfer.setAccount_to(recipientId);
 		try {
-			accountService.sendBucks(recipientId, amountToTransferAsDouble);
+//			accountService.sendBucks(recipientId, amountToTransferAsDouble);
+			accountService.sendBucks(transfer);
 		} catch (Exception e) {
 			e.getMessage();
 		}

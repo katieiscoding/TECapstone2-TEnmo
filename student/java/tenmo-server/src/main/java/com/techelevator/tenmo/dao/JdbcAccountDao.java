@@ -1,6 +1,6 @@
 package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.Account;
-import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -48,6 +48,18 @@ public class JdbcAccountDao implements AccountDao {
         }
         return allUsers;
     }
+
+
+    public void addToBalance(@org.jetbrains.annotations.NotNull Transfer transfer) {
+        String sql = "UPDATE accounts SET balance = (balance + ?) WHERE user_id = ?";
+        jdbcTemplate.update(sql, transfer.getAmount(), transfer.getAccount_to());
+    }
+
+    public void subtractFromBalance(Transfer transfer) {
+        String sql = "UPDATE accounts SET balance = (balance - ?) WHERE user_id = ?";
+        jdbcTemplate.update(sql, transfer.getAmount(), transfer.getAccount_from());
+    }
+
 
     private Account mapRowToAccount(SqlRowSet rs) {
         Account account = new Account();
