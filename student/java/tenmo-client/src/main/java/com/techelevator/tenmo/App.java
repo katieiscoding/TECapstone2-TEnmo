@@ -9,7 +9,6 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.view.ConsoleService;
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 public class App {
 
