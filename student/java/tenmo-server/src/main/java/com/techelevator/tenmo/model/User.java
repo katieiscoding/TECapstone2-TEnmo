@@ -22,7 +22,11 @@ public class User {
       this.activated = true;
    }
 
-   public Long getId() {
+    public User() {
+
+    }
+
+    public Long getId() {
       return id;
    }
 

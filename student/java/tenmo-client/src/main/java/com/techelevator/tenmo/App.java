@@ -1,8 +1,5 @@
 package com.techelevator.tenmo;
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.User;
-import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AccountServiceException;
 import com.techelevator.tenmo.services.AuthenticationService;
@@ -133,9 +130,16 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 		private void viewAllUsers() {
     	User[] allUsers = accountService.getAllUsers();
+			System.out.println("Available users:\n");
     	for(User a : allUsers) {
+    		if (a.getUsername().equals(currentUser.getUser().getUsername())) {
+				break;
+			}
+//			Integer accountId = accountService.findAccountIdByUsername(a.getUsername());
 			System.out.println(a.getUsername());
+//			System.out.println(accountId);
 		}
+			System.out.println("\b");
 
 	}
 

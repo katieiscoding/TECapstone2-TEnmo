@@ -24,7 +24,20 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public int findIdByUsername(String username) {
-        String sql = "SELECT user_id FROM users WHERE username ILIKE ?;";
+        String sql = "SELECT user_id FROM users WHERE username ILIKE ?";
+        Integer id = jdbcTemplate.queryForObject(sql, Integer.class, username);
+        if (id != null) {
+            return id;
+        } else {
+            return -1;
+        }
+    }
+
+    @Override
+    public Integer findAccountIdByUsername(String username) {
+        String sql = "SELECT account_id FROM accounts " +
+                "JOIN users ON users.user_id = accounts.user_id " +
+                "WHERE username ILIKE ?";
         Integer id = jdbcTemplate.queryForObject(sql, Integer.class, username);
         if (id != null) {
             return id;
@@ -36,7 +49,7 @@ public class JdbcUserDao implements UserDao {
     @Override
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT user_id, username, password_hash FROM users;";
+        String sql = "SELECT user_id, username, password_hash FROM users";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
         while (results.next()) {
             User user = mapRowToUser(results);
@@ -47,7 +60,7 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public User findByUsername(String username) throws UsernameNotFoundException {
-        String sql = "SELECT user_id, username, password_hash FROM users WHERE username ILIKE ?;";
+        String sql = "SELECT user_id, username, password_hash FROM users WHERE username ILIKE ?";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, username);
         if (rowSet.next()) {
             return mapRowToUser(rowSet);

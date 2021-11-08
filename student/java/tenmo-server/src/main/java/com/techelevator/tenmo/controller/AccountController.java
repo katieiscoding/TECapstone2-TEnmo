@@ -35,7 +35,18 @@ public class AccountController {
         return accountDao.getAccountByUserId(currentUserId).getBalance();
     }
 
-    @RequestMapping(path = "", method = RequestMethod.GET)
+    @RequestMapping(path = "/users/{username}", method = RequestMethod.GET)
+    public void findAccountIdByUsername(@PathVariable String username)
+            throws IllegalAccessException {
+//        int currentAccountId = userDao.findAccountIdByUsername(username);
+        int currentUserId = userDao.findIdByUsername(username);
+//        return currentAccountId;
+        System.out.println(username + "'s user ID is " + currentUserId + ".");
+
+}
+
+
+        @RequestMapping(path = "", method = RequestMethod.GET)
     public List<Account> getAllUsers() {
         return accountDao.getAllUsers();
     }

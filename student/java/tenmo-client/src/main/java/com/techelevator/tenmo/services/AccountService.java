@@ -80,6 +80,12 @@ public class AccountService {
         return response.getBody();
     }
 
+    public Integer findAccountIdByUsername(@PathVariable String username) {
+        String path = API_BASE_URL + "accounts/users/" + username;
+        ResponseEntity<Integer> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(), Integer.class);
+        return response.getBody();
+    }
+
     private HttpEntity<Transfer[]> makeTransferArrayEntity(Transfer[] transferArray) {
         HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
