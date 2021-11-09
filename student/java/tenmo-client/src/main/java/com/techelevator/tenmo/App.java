@@ -129,15 +129,15 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 		private void viewAllUsers() {
-    	User[] allUsers = accountService.getAllUsers();
+    	Account[] allUsers = accountService.getAllUsers();
 			System.out.println("Available users:\n");
-    	for(User a : allUsers) {
+    	for(Account a : allUsers) {
     		if (a.getUsername().equals(currentUser.getUser().getUsername())) {
 				break;
 			}
 //			Integer accountId = accountService.findAccountIdByUsername(a.getUsername());
 			System.out.println(a.getUsername());
-//			System.out.println(accountId);
+			System.out.println(a.getAccountId());
 		}
 			System.out.println("\b");
 

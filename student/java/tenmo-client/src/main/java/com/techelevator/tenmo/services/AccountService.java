@@ -51,9 +51,9 @@ public class AccountService {
             return returnedTransfer;
     }
 
-    public User[] getAllUsers() {
+    public Account[] getAllUsers() {
         String path = API_BASE_URL + "accounts";
-        ResponseEntity<User[]> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(), User[].class);
+        ResponseEntity<Account[]> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(), Account[].class);
         return response.getBody();
     }
 

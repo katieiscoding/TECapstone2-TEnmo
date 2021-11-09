@@ -7,10 +7,10 @@ import java.math.BigDecimal;
 
 public class Account {
     @NotBlank(message = "Account id is required.")
-    @JsonProperty("account_id")
+    @JsonProperty("accountId")
     private int accountId;
     @NotBlank(message = "User id is required.")
-    @JsonProperty("user_id")
+    @JsonProperty("userId")
     private int userId;
     private BigDecimal balance;
     private String username;

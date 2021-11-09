@@ -10,6 +10,9 @@ public class Account {
     private BigDecimal balance;
     private String username;
 
+    public Account(){}
+
+
     public Account(int accountId, int userId, String username, BigDecimal balance) {
         this.accountId = accountId;
         this.userId = userId;

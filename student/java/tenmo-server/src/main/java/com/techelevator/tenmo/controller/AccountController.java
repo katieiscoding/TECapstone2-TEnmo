@@ -29,7 +29,7 @@ public class AccountController {
     }
 
     @RequestMapping(path = "/users", method = RequestMethod.GET)
-    public BigDecimal getAccountByUserId(Principal principal)
+    public BigDecimal getBalance(Principal principal)
             throws IllegalAccessException {
         int currentUserId = userDao.findIdByUsername(principal.getName());
         return accountDao.getAccountByUserId(currentUserId).getBalance();
