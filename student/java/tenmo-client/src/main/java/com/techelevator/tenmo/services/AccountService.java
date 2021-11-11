@@ -51,7 +51,7 @@ public class AccountService {
             return returnedTransfer;
     }
 
-    public Account[] getAllUsers() {
+    public Account[] getAllAccounts() {
         String path = API_BASE_URL + "accounts";
         ResponseEntity<Account[]> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(), Account[].class);
         return response.getBody();
@@ -68,19 +68,19 @@ public class AccountService {
 }
 
 
-    public Transfer[] getListOfTransfersByUserID(@PathVariable int userId) {
+    public Transfer[] getListOfTransfersByUserID(int userId) {
         String path = API_BASE_URL + "transfers/users/" + userId;
         ResponseEntity<Transfer[]> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(), Transfer[].class);
         return response.getBody();
     }
 
-    public Transfer getTransferByTransferId(@PathVariable int transferID) {
+    public Transfer getTransferByTransferId(int transferID) {
         String path = API_BASE_URL + "transfers/" + transferID;
         ResponseEntity<Transfer> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(), Transfer.class);
         return response.getBody();
     }
 
-    public Integer findAccountIdByUsername(@PathVariable String username) {
+    public Integer findAccountIdByUsername(String username) {
         String path = API_BASE_URL + "accounts/users/" + username;
         ResponseEntity<Integer> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(), Integer.class);
         return response.getBody();

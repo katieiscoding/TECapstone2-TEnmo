@@ -120,6 +120,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			System.out.println("You can't overdraw your account.");
 			return;
 		}
+		if (transfer.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+			System.out.println("Please enter an amount greater than zero.");
+			return;
+		}
 		try {
 			accountService.sendBucks(transfer);
 			System.out.println("Transfer complete.");
@@ -129,7 +133,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 		private void viewAllUsers() {
-    	Account[] allUsers = accountService.getAllUsers();
+    	Account[] allUsers = accountService.getAllAccounts();
 			System.out.println("Available users:\n");
     	for(Account a : allUsers) {
     		if (a.getUsername().equals(currentUser.getUser().getUsername())) {

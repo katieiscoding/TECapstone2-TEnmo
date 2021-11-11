@@ -6,7 +6,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public List<Account> getAllUsers() {
+    public List<Account> getAllAccounts() {
         List<Account> allUsers = new ArrayList<>();
         String sql = "SELECT * FROM accounts";
         SqlRowSet result = jdbcTemplate.queryForRowSet(sql);
@@ -70,5 +69,4 @@ public class JdbcAccountDao implements AccountDao {
         account.setUsername(getUsernameById(rs.getInt("user_id")));
         return account;
     }
-
 }

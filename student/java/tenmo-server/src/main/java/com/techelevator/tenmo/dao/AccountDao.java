@@ -11,7 +11,7 @@ import java.util.List;
 public interface AccountDao {
 //    BigDecimal getBalance(Principal principal);
       Account getAccountByUserId(int userId);
-      List<Account> getAllUsers();
+      List<Account> getAllAccounts();
       String getUsernameById(int userId);
       void addToBalance(Transfer transfer);
       void subtractFromBalance(Transfer transfer);
