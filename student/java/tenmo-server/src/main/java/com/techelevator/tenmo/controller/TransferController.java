@@ -31,8 +31,8 @@ public class TransferController {
     public void sendBucks(Principal principal, @RequestBody Transfer transfer)
             throws IllegalTransactionStateException {
         transferDao.sendBucks(transfer);
-//        accountDao.addToBalance(transfer);
-//        accountDao.subtractFromBalance(transfer);
+        accountDao.addToBalance(transfer);
+        accountDao.subtractFromBalance(transfer);
     }
 
 

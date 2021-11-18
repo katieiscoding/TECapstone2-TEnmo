@@ -22,7 +22,8 @@ public class JdbcTransferDao implements TransferDao {
                     transfer.getAccount_from(), transfer.getAccount_to(), transfer.getAmount());
 
 
-            //how about now
+            //this was just a test, this was only a test
+
 //            String squl = "UPDATE accounts SET balance = (balance + ?) WHERE account_id = ?";
 //            jdbcTemplate.update(squl, transfer.getAmount(), transfer.getAccount_to());
 //
