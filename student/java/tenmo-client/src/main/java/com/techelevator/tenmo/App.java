@@ -30,7 +30,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private AccountService accountService;
 
 
-    public static void main(String[] args) throws AccountServiceException {
+    public static void main(String[] args) throws Exception {
     	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL), new AccountService());
     	app.run();
     }
@@ -41,7 +41,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		this.accountService = accountService;
 	}
 
-	public void run() throws AccountServiceException {
+	public void run() throws Exception {
 		System.out.println("*********************");
 		System.out.println("* Welcome to TEnmo! *");
 		System.out.println("*********************");
@@ -50,7 +50,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		mainMenu();
 	}
 
-	private void mainMenu() throws AccountServiceException {
+	private void mainMenu() throws Exception {
 		while(true) {
 			String choice = (String)console.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 			if(MAIN_MENU_OPTION_VIEW_BALANCE.equals(choice)) {
@@ -82,7 +82,6 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewTransferHistory() {
     	int userId = console.getUserInputInteger("Enter your user ID");
-//		System.out.println(accountService.getListOfTransfersByUserID(userId));
 		Transfer[] transfers = accountService.getListOfTransfersByUserID(userId);
 		for (Transfer transfer : transfers) {
 			System.out.println(transfer.toString());
@@ -102,8 +101,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		
 	}
 
-	private void sendBucks() throws AccountServiceException {
-		viewAllUsers();
+	private void sendBucks() throws AccountServiceException, Exception {
+		viewAllAccounts();
 		int senderAccountId = console.getUserInputInteger("Enter your account ID");
 		int recipientAccountId = console.getUserInputInteger("Enter the desired recipient's account ID");
 		String amountToTransfer = console.getUserInput("Enter the amount of money you want to send");
@@ -124,24 +123,25 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			System.out.println("Please enter an amount greater than zero.");
 			return;
 		}
-		try {
-			accountService.sendBucks(transfer);
-			System.out.println("Transfer complete.");
-		} catch (Exception e) {
-			e.getMessage();
-		}
+		accountService.sendBucks(transfer);
+
+		System.out.println("Transfer complete.");
 	}
 
-		private void viewAllUsers() {
+		private void viewAllAccounts() {
     	Account[] allUsers = accountService.getAllAccounts();
+
 			System.out.println("Available users:\n");
     	for(Account a : allUsers) {
-    		if (a.getUsername().equals(currentUser.getUser().getUsername())) {
-				break;
-			}
-//			Integer accountId = accountService.findAccountIdByUsername(a.getUsername());
-			System.out.println(a.getUsername());
-			System.out.println(a.getAccountId());
+
+//    		if (a.getUsername().equals(currentUser.getUser().getUsername())) {
+//				break;
+//			}
+			System.out.println("\b");
+
+			// just commenting this out to check
+
+			System.out.println(a.getUsername() + ":  User ID #" + a.getUserId() + "  |  Account ID #" + a.getAccountId());
 		}
 			System.out.println("\b");
 
@@ -183,7 +183,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
             try {
             	authenticationService.register(credentials);
             	isRegistered = true;
-            	System.out.println("Registration successful. You can now login.");
+            	System.out.println("Registration successful. You can now log in.");
             } catch(AuthenticationServiceException e) {
             	System.out.println("REGISTRATION ERROR: "+e.getMessage());
 				System.out.println("Please attempt to register again.");

@@ -13,13 +13,24 @@ public class JdbcTransferDao implements TransferDao {
     public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+    private AccountDao accountDao;
 
         @Override
         public void sendBucks(Transfer transfer) {
             String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (?, ?, ?, ?, ?)";
             jdbcTemplate.update(sql, transfer.getTransfer_type_id(), transfer.getTransfer_status_id(),
                     transfer.getAccount_from(), transfer.getAccount_to(), transfer.getAmount());
+
+
+            //how about now
+//            String squl = "UPDATE accounts SET balance = (balance + ?) WHERE account_id = ?";
+//            jdbcTemplate.update(squl, transfer.getAmount(), transfer.getAccount_to());
+//
+//            String seql = "UPDATE accounts SET balance = (balance - ?) WHERE account_id = ?";
+//            jdbcTemplate.update(seql, transfer.getAmount(), transfer.getAccount_from());
+
         }
+
 
         @Override
         public List<Transfer> getTransfersByUserId(int userId) {

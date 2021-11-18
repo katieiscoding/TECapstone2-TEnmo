@@ -28,26 +28,21 @@ public class AccountController {
     }
 
     @RequestMapping(path = "/users", method = RequestMethod.GET)
-    public BigDecimal getBalance(Principal principal)
-            throws IllegalAccessException {
+    public BigDecimal getBalance(Principal principal) throws IllegalAccessException {
         int currentUserId = userDao.findIdByUsername(principal.getName());
         return accountDao.getAccountByUserId(currentUserId).getBalance();
     }
 
     @RequestMapping(path = "/users/{username}", method = RequestMethod.GET)
-    public void findAccountIdByUsername(@PathVariable String username)
-            throws IllegalAccessException {
-//        int currentAccountId = userDao.findAccountIdByUsername(username);
+    public void findAccountIdByUsername(@PathVariable String username) throws IllegalAccessException {
         int currentUserId = userDao.findIdByUsername(username);
-//        return currentAccountId;
         System.out.println(username + "'s user ID is " + currentUserId + ".");
 
 }
 
 
         @RequestMapping(path = "", method = RequestMethod.GET)
-    public List<Account> getAllUsers() {
-        return accountDao.getAllAccounts();
+    public List<Account> getAllAccounts() { return accountDao.getAllAccounts();
     }
 }
 

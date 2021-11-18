@@ -37,7 +37,7 @@ public class AccountService {
         this.currentUser = user;
     }
 
-        public Transfer sendBucks(Transfer newTransfer) throws AccountServiceException {
+        public Transfer sendBucks(Transfer newTransfer) {
         Transfer returnedTransfer = null;
 
         try {
@@ -54,6 +54,14 @@ public class AccountService {
     public Account[] getAllAccounts() {
         String path = API_BASE_URL + "accounts";
         ResponseEntity<Account[]> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(), Account[].class);
+        return response.getBody();
+    }
+
+    //ADDED THIS BACK IN JUST IN CASE
+
+    public User[] getAllUsers() {
+        String path = API_BASE_URL + "accounts";
+        ResponseEntity<User[]> response = restTemplate.exchange(path, HttpMethod.GET, makeAuthEntity(), User[].class);
         return response.getBody();
     }
 
