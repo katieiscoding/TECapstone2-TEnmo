@@ -43,7 +43,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	public void run() throws Exception {
 		System.out.println("*********************");
-		System.out.println("* Welcome to TEnmo! *");
+		System.out.println("* Welcome to Tenmo! *");
 		System.out.println("*********************");
 		
 		registerAndLogin();
@@ -181,7 +181,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void register() {
-		System.out.println("Please register a new user account");
+		System.out.println("--------------------------------------");
+		System.out.println("Please register a new user account.");
+		System.out.println("--------------------------------------");
 		boolean isRegistered = false;
         while (!isRegistered) //will keep looping until user is registered
         {
@@ -189,7 +191,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
             try {
             	authenticationService.register(credentials);
             	isRegistered = true;
+				System.out.println("\b");
+				System.out.println("------------------------------------------------");
             	System.out.println("Registration successful. You can now log in.");
+				System.out.println("------------------------------------------------");
             } catch(AuthenticationServiceException e) {
 //            	System.out.println("REGISTRATION ERROR: "+e.getMessage());
 				System.out.println("Registration Error! Please attempt to register again.");
@@ -198,7 +203,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void login() {
+		System.out.println("------------------");
 		System.out.println("Please log in");
+		System.out.println("------------------");
 		currentUser = null;
 		while (currentUser == null) //will keep looping until user is logged in
 		{
