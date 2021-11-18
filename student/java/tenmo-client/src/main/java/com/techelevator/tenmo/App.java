@@ -77,7 +77,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void viewCurrentBalance() throws AccountServiceException {
     	//TODO prompt for user input
 		BigDecimal balance = accountService.getBalance();
+		System.out.println("-------------------------------------");
 		System.out.println("Your current balance is: $" + balance);
+		System.out.println("-------------------------------------");
 	}
 
 	private void viewTransferHistory() {
@@ -115,35 +117,39 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		transfer.setTransfer_status_id(2);
 		transfer.setTransfer_type_id(2);
 		transfer.setAccount_to(recipientAccountId);
+
 		if (transfer.getAmount().compareTo(accountService.getBalance()) > 0) {
 			System.out.println("You can't overdraw your account.");
 			return;
 		}
-		if (transfer.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+		if ((transfer.getAmount().compareTo(BigDecimal.ZERO) < 0)) {
 			System.out.println("Please enter an amount greater than zero.");
 			return;
 		}
 		accountService.sendBucks(transfer);
-
+		System.out.println("\b");
+		System.out.println("----------------------");
 		System.out.println("Transfer complete.");
+		System.out.println("----------------------");
 	}
 
 		private void viewAllAccounts() {
     	Account[] allUsers = accountService.getAllAccounts();
+			System.out.println("-----------------------------------------------");
+			System.out.println("Please select a recipient from the below list:");
+			System.out.println("-----------------------------------------------");
+    		for(Account a : allUsers) {
 
-			System.out.println("Available users:\n");
-    	for(Account a : allUsers) {
-
-//    		if (a.getUsername().equals(currentUser.getUser().getUsername())) {
-//				break;
-//			}
+    		if (a.getUsername().equals(currentUser.getUser().getUsername())) {
+				continue;
+			}
 			System.out.println("\b");
-
-			// just commenting this out to check
 
 			System.out.println(a.getUsername() + ":  User ID #" + a.getUserId() + "  |  Account ID #" + a.getAccountId());
 		}
 			System.out.println("\b");
+    		System.out.println("-----------------------------------------------");
+    		System.out.println("\b");
 
 	}
 
@@ -185,8 +191,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
             	isRegistered = true;
             	System.out.println("Registration successful. You can now log in.");
             } catch(AuthenticationServiceException e) {
-            	System.out.println("REGISTRATION ERROR: "+e.getMessage());
-				System.out.println("Please attempt to register again.");
+//            	System.out.println("REGISTRATION ERROR: "+e.getMessage());
+				System.out.println("Registration Error! Please attempt to register again.");
             }
         }
 	}
@@ -201,8 +207,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				currentUser = authenticationService.login(credentials);
 				accountService.setAuthToken(currentUser.getToken());
 			} catch (AuthenticationServiceException e) {
-				System.out.println("LOGIN ERROR: "+e.getMessage());
-				System.out.println("Please attempt to login again.");
+//				System.out.println("LOGIN ERROR: "+e.getMessage());
+				System.out.println("Login error! Please attempt to log in again.");
 			}
 		}
 	}
